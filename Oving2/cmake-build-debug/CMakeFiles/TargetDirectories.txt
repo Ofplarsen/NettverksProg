@@ -1,0 +1,3 @@
+C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Oving2/cmake-build-debug/CMakeFiles/Oving2.dir
+C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Oving2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Oving2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
