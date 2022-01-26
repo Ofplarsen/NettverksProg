@@ -34,21 +34,32 @@ class Workers{
 
                 });
             }
+            return 1;
         }
 
-    [[noreturn]] void post(list<function<void()>> tasksToPost){
-            this->tasks = tasksToPost;
+    void post(list<function<void()>> tasksToPost){
+        this->tasks = tasksToPost;
+        for (int i = 0; i < 4; ++i) {
 
-            while (true){
-                unique_lock<mutex> lock(tasks_mutex);
+            threads.emplace_back([this] {
+                while (true) {
+                    function<void()> task;
+                    unique_lock<mutex> lock(tasks_mutex);
 
-                if (!tasks.empty()) {
-                    auto task = *tasks.begin();// Copy task tasks.pop_front();
-                    tasks.pop_front();// Remove task from list task();
-                    this->tasks.emplace_back(task);
+                    if (!tasks.empty()) {
+                        task = *tasks.begin();
+                        tasks.pop_front();
+                    }else{
+                        break;
+                    }
+                    cout << " runs in thread " << this_thread::get_id << endl;
+                    if (task) {
+                        task();
+                    }
                 }
-            }
+            });
         }
+    }
 
     void post_timeout(list<function<void()>> tasksToPost, int ms){
 
@@ -63,10 +74,16 @@ class Workers{
 
 int main() {
     Workers worker_thread(4);
+    list<function<void()>> tasks;
 
-    worker_thread.post([]{
-        cout << "task " << i << " runs in thread " << this_thread::get_id() << endl;
-    });
+    for (int i = 0; i < 1000; ++i) {
+        tasks.emplace_back([i]{
+            cout << "task " << i << " runs in thread " << endl;
+        });
+    }
+    worker_thread.start();
+    worker_thread.post(tasks);
+    worker_thread.join();
 
     return 0;
 }

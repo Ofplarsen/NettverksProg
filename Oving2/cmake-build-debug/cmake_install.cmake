@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Oving2
+# Install script for directory: C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Ovinger/Oving2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Oving2/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/xray2/OneDrive/Documents/NTNU/DataIng2023/Vaar2022/Nettverksprogrammering/Programmering/Ovinger/Oving2/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
