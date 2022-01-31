@@ -3,4 +3,4 @@ project(Oving2)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Oving2 main.cpp main2.cpp main2.h)
+add_executable(Oving2 main.cpp)

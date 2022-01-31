@@ -15,16 +15,14 @@ using namespace std;
 class Workers{
     private:
     int numberOfThreads;
-    mutex tasks_mutex;
-    mutex threads_mutex;
+    mutex tasks_mutex; //Mutex for when doing something with tasks
+    mutex threads_mutex; //Mutex for when doing somthing with if the threads has stopped or is going
     list<function<void()>> tasks;
-    mutex wait_mutex;
+    mutex wait_mutex; //Mutex for waiting boolean
     condition_variable cv;
     vector<thread> threads;
     bool end;
     bool wait;
-
-
 
     public:
 
@@ -33,45 +31,42 @@ class Workers{
         }
 
         int start(){
-            threads.clear();
+            threads.clear(); //Clears all earlier threads
 
-            for (int i = 0; i < this->numberOfThreads; ++i) {
-
+            for (int i = 0; i < this->numberOfThreads; ++i) { //Creates x number of threads
 
                 threads.emplace_back([this] {
                     bool fin = false;
                     bool tasksLeft = false;
-                    while (!fin) {
+                    while (!fin) { //While thread is not finished
                         function<void()> task;
-                        {
 
-                            if(!tasksLeft){
-                                unique_lock<mutex> lock(wait_mutex);
-                                while (wait)
-                                    cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
+                        if(!tasksLeft){
+                            unique_lock<mutex> lock(wait_mutex);
+                            while (wait)
+                                cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
 
-                            }
+                        }
 
-                            {
-                                unique_lock<mutex> lock(tasks_mutex);
-                                if (!tasks.empty()) {
-                                    task = *tasks.begin();
-                                    tasks.pop_front();
-                                    tasksLeft = true;
-                                } else {
+                        { //Scopes used to release mutexes faster than without
+                            unique_lock<mutex> lock(tasks_mutex); //Lock tasks
+                            if (!tasks.empty()) {
+                                task = *tasks.begin();
+                                tasks.pop_front();      //Code from presentation
+                                tasksLeft = true;       //Checks if there are any tasks left
+                            } else {
 
-                                    {
-                                        unique_lock<mutex> lock(threads_mutex);
-                                        if(end){
-                                            fin = true;
-                                        }else{
-                                            unique_lock<mutex> lock(wait_mutex);
-                                            wait = true;
-                                            tasksLeft = true;
-                                        }
+                                {
+                                    unique_lock<mutex> lock(threads_mutex);
+                                    if(end){ //If stop is called, the thread should make fin = true
+                                        fin = true;
+                                    }else{ //IF not, wait for new tasks
+                                        unique_lock<mutex> lock(wait_mutex); //Lock waiting boolean
+                                        wait = true;
+                                        tasksLeft = true;
                                     }
-
                                 }
+
                             }
                         }
 
@@ -89,12 +84,12 @@ class Workers{
         void post(function<void()> taskToPost){
 
             {
-                unique_lock<mutex> lock(tasks_mutex);
+                unique_lock<mutex> lock(tasks_mutex); //Lock tasks to add new task
                 tasks.emplace_back(taskToPost);
             }
 
             {
-                unique_lock<mutex> lock(wait_mutex);
+                unique_lock<mutex> lock(wait_mutex); //Lock wait boolean (to make sure wait = false) so the threads can start working
                 wait = false;
             }
 
@@ -103,9 +98,9 @@ class Workers{
 
         void post_timeout(function<void()> taskToPost, int ms){
             {
-                unique_lock<mutex> lock(tasks_mutex);
+                unique_lock<mutex> lock(tasks_mutex); //Lock tasks again
                 tasks.emplace_back([&ms, &taskToPost]{
-                    this_thread::sleep_for(chrono::milliseconds(ms));
+                    this_thread::sleep_for(chrono::milliseconds(ms)); //Sleeps for duration, before adding to tasks
                     taskToPost();
                 });
             }
@@ -115,19 +110,19 @@ class Workers{
 
         void stop() {
             {
-                unique_lock<mutex> lock(threads_mutex);
-                end = false;
+                unique_lock<mutex> lock(threads_mutex); //Lock end boolean and make true
+                end = true;
             }
             {
-                unique_lock<mutex> lock(wait_mutex);
+                unique_lock<mutex> lock(wait_mutex); //Lock wait boolean and make false
                 wait = false;
             }
-            cv.notify_one();
+            cv.notify_all();
         }
 
         void join(){
 
-            for (auto &thread : threads) thread.join();
+            for (auto &thread : threads) thread.join(); //Join all threads
 
         }
 
