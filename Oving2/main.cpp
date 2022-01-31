@@ -7,107 +7,95 @@
 #include <condition_variable>
 #include <functional>
 #include <list>
+#include <atomic>
 
 using namespace std;
 
 class Workers{
     private:
-    vector<thread> threads;
     int numberOfThreads;
     mutex tasks_mutex;
+    mutex threads_mutex;
     list<function<void()>> tasks;
+    mutex wait_mutex;
+    condition_variable cv;
+    condition_variable cvThreads;
+    atomic<bool> running;
+    bool wait;
+    bool joinWait;
 
-    void stop(){
-        join();
-    }
 
     public:
+    vector<thread> threads;
         explicit Workers(int numOfThreads) {
             this->numberOfThreads = numOfThreads;
         }
 
         int start(){
-            for(int i = 0; i < numberOfThreads; i++){
+
+            for (int i = 0; i < this->numberOfThreads; ++i) {
+                wait = true;
+                cout << threads.size() << endl;
+                threads.emplace_back([this] {
+                    while (true) {
+                        function<void()> task;
+                        {
+                            unique_lock<mutex> lock(wait_mutex);
+                            while (wait)
+                                cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
+
+                            if (!tasks.empty()) {
+                                task = *tasks.begin();
+                                tasks.pop_front();
+                            } else{
+                                break;
+                            }
+                        }
+
+                        //cout << " runs in thread " << this_thread::get_id << endl;
+                        if (task) {
+                            task();
+                        }
+
+                    }
+                });
+
+
+                //this_thread::sleep_for(1s);
+
+                {
+                    unique_lock<mutex> lock(wait_mutex);
+                    wait = false;
+                }
+
+                cv.notify_one(); // Awake waiting cv
+
             }
-            return 1;
         }
 
     void post(list<function<void()>> tasksToPost){
-        bool wait(true);
-        mutex wait_mutex;
-        condition_variable cv;
-
-
-        this->tasks = tasksToPost;
-        for (int i = 0; i < this->numberOfThreads; ++i) {
-            cout << threads.size() << endl;
-            threads.emplace_back([this, &wait, &wait_mutex, &cv] {
-                while (true) {
-                    function<void()> task;
-                    {
-                        unique_lock<mutex> lock(wait_mutex);
-                        while (wait)
-                            cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
-
-                        if (!tasks.empty()) {
-                            task = *tasks.begin();
-                            tasks.pop_front();
-                        }else{
-                            break;
-                        }
-                    }
-
-                    //cout << " runs in thread " << this_thread::get_id << endl;
-                    if (task) {
-                        task();
-                    }
-
-                }
-            });
-
-
-            this_thread::sleep_for(1s);
-
-            {
-                unique_lock<mutex> lock(wait_mutex);
-                wait = false;
-            }
-
-            cv.notify_one(); // Awake waiting cv
-        }
+        unique_lock<mutex> lock(tasks_mutex);
+        tasks.insert(tasks.end(), tasksToPost.begin(), tasksToPost.end());
     }
 
     void post_timeout(list<function<void()>> tasksToPost, int ms){
 
+
+        thread t([this, &ms, &tasksToPost] {
+            this_thread::sleep_for(chrono::milliseconds(ms));
+            post(tasksToPost);
+        });
+
+        t.join();
+        start();
     }
 
-    void join() {
-            for (auto &thread: threads) thread.join();
-        }
+    void stop() {
+
+        for (auto &thread : threads) thread.join();
+    }
 
 };
-
-int main2(){
-    bool wait(true);
-    mutex wait_mutex;
-    condition_variable cv;
-
-    thread t([&wait, &wait_mutex, &cv] {
-        unique_lock<mutex> lock(wait_mutex);
-        while (wait) cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
-        cout << "thread: finished waiting" << endl;
-    });
-
-    this_thread::sleep_for(1s);
-
-    {
-        unique_lock<mutex> lock(wait_mutex);
-        wait = false;
-    }
-
-    cv.notify_one(); // Awake waiting cv
-    t.join();
-}
 
 int main() {
 
@@ -119,39 +107,44 @@ int main() {
     list<function<void()>> tasksC;
     list<function<void()>> tasksD;
 
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10; ++i) {
         tasksA.emplace_back([i]{
-            cout << "taskA " << i << " runs in thread " << endl;
+            cout << "A " << i << " runs in thread " << endl;
         });
     }
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10; ++i) {
         tasksB.emplace_back([i]{
-            cout << "taskB " << i << " runs in thread " << endl;
+            cout << "B " << i << " runs in thread " << endl;
         });
     }
 
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10; ++i) {
         tasksC.emplace_back([i]{
-            cout << "taskC " << i << " runs in thread " << endl;
+            cout << "C " << i << " runs in thread " << endl;
         });
     }
 
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 10; ++i) {
         tasksD.emplace_back([i]{
-            cout << "taskD " << i << " runs in thread " << endl;
+            cout << "D " << i << " runs in thread " << endl;
         });
     }
-    worker_thread.start();
 
     worker_thread.post(tasksA);
-    //worker_thread.post(tasksB);
+    worker_thread.post_timeout(tasksA,1000);
+    worker_thread.post_timeout(tasksB,500);
 
     event_loop.post(tasksC);
     event_loop.post(tasksD);
 
-    worker_thread.join();
-    event_loop.join();
-    //main2();
+
+    event_loop.start();
+    worker_thread.start();
+
+
+
+    worker_thread.stop();
+    event_loop.stop();
 
     return 0;
 }
