@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -39,11 +40,12 @@ class Workers{
 
                 threads.emplace_back([this] {
                     bool fin = false;
+                    bool tasksLeft = false;
                     while (!fin) {
                         function<void()> task;
                         {
 
-                            if(tasks.empty()){
+                            if(!tasksLeft){
                                 unique_lock<mutex> lock(wait_mutex);
                                 while (wait)
                                     cv.wait(lock); // Unlock wait_mutex and wait. // When awaken, wait_mutex is locked.
@@ -55,6 +57,7 @@ class Workers{
                                 if (!tasks.empty()) {
                                     task = *tasks.begin();
                                     tasks.pop_front();
+                                    tasksLeft = true;
                                 } else {
 
                                     {
@@ -64,7 +67,7 @@ class Workers{
                                         }else{
                                             unique_lock<mutex> lock(wait_mutex);
                                             wait = true;
-                                            break;
+                                            tasksLeft = true;
                                         }
                                     }
 
