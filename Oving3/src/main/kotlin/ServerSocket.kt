@@ -5,15 +5,20 @@ import java.io.PrintWriter
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.net.Socket
-import java.util.*
 import java.net.ServerSocket as SS
-import javax.sound.sampled.Port
-import javax.xml.stream.events.Characters
 
 
-class ServerSocket(private var PORT:Int) {
+class ServerSocket() {
 
-    private val server = SS(PORT)
+    constructor(PORT: Int) : this() {
+        this.PORT = PORT
+    }
+
+    constructor(server: SS) : this() {
+        this.server = server
+    }
+    private var PORT: Int = 0
+    private var server = SS(PORT)
     private lateinit var connection: Socket
     private lateinit var readerConnection: InputStreamReader
     private lateinit var reader: BufferedReader
@@ -21,10 +26,12 @@ class ServerSocket(private var PORT:Int) {
 
     fun openConnection(): Boolean{
         try {
+
             readerConnection = InputStreamReader(connection.getInputStream())
             reader = BufferedReader(readerConnection)
             writer = PrintWriter(connection.getOutputStream(), true)
         }catch (e : Exception){
+            println(e.message)
             return false;
         }
         return true;
@@ -47,6 +54,9 @@ class ServerSocket(private var PORT:Int) {
         readerConnection.close()
         reader.close()
         writer.close()
+    }
+    fun getServer(): java.net.ServerSocket {
+        return server
     }
 }
 
@@ -89,7 +99,8 @@ class StringConverter(){
 }
 
 @Throws(IOException::class)
-fun main(args: Array<String>) {
+@Synchronized fun main(args: Array<String>) {
+    /*
     val server = ServerSocket(1250)
 
     println("Logg for tjenersiden. Nå venter vi...")
@@ -130,4 +141,18 @@ fun main(args: Array<String>) {
     }
 
     server.closeConnection()
+     */
+
+    var mainServerSocket = ServerSocket(1250)
+    while (true){
+        var socket: java.net.ServerSocket
+        if(mainServerSocket.acceptConnection()){
+            socket = mainServerSocket.getServer()
+        }else{
+            break;
+        }
+
+        SocketThread(ServerSocket(socket)).run()
+    }
+
 }

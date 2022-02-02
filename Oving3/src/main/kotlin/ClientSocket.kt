@@ -54,15 +54,20 @@ class ClientSocket(private var PORT: Int) {
 @Throws(IOException::class)
 
 fun main(args: Array<String>) {
+
     val clientReader = Scanner(System.`in`)
     print("Oppgi navnet på maskinen der tjenerprogrammet kjører: ")
     var serverIP = clientReader.nextLine()
+    //print("Oppgi Port: ")
+    //var port = clientReader.nextLine().toInt()
     val client = ClientSocket(1250);
-
     if(client.createConnection(serverIP)){
         println("Nå er forbindelsen opprettet.")
 
         println(client.getStartIntroFromServer())
+    }else{
+        println("Error")
+        return
     }
 
     /* Leser tekst fra kommandovinduet (brukeren) */
@@ -81,4 +86,9 @@ fun main(args: Array<String>) {
 
     /* Lukker forbindelsen */
     client.disconnect()
+
+
+
+
+
 }

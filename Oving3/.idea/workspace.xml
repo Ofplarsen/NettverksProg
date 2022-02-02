@@ -9,38 +9,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa593bb6-3cd0-4635-9b94-a2597099b191" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/dependencies-accessors/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileChanges/last-build.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/checksums/md5-checksums.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/ServerSocket.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.cmake/api/v1/reply/cache-v2-04266744b1ab222f38da.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.cmake/api/v1/reply/index-2022-01-31T16-15-10-0637.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Oving2/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../Oving2/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="aa593bb6-3cd0-4635-9b94-a2597099b191" name="Changes" comment="Created simple socket that can add or sub">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/SocketThread.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ServerSocket.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ServerSocket.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,10 +67,11 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Kotlin.ServerSocketKt">
-    <configuration name="ClientSocketKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Kotlin.ClientSocketKt">
+    <configuration name="ClientSocketKt" type="JetRunConfigurationType" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ClientSocketKt" />
       <module name="untitled.main" />
+      <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -109,14 +86,20 @@
     <configuration name="ServerSocketKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ServerSocketKt" />
       <module name="untitled.main" />
+      <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Kotlin.ClientSocketKt" />
+      <item itemvalue="Kotlin.MainKt" />
+      <item itemvalue="Kotlin.ServerSocketKt" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.ServerSocketKt" />
         <item itemvalue="Kotlin.ClientSocketKt" />
+        <item itemvalue="Kotlin.ServerSocketKt" />
       </list>
     </recent_temporary>
   </component>
@@ -130,8 +113,19 @@
       <updated>1643711169146</updated>
       <workItem from="1643711170735" duration="2329000" />
       <workItem from="1643713830174" duration="6000" />
-      <workItem from="1643721486818" duration="2694000" />
+      <workItem from="1643721486818" duration="4599000" />
+      <workItem from="1643799638141" duration="531000" />
+      <workItem from="1643813259088" duration="772000" />
+      <workItem from="1643814177189" duration="3078000" />
     </task>
+    <task id="LOCAL-00001" summary="Created simple socket that can add or sub">
+      <created>1643724411387</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1643724411387</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,5 +144,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Created simple socket that can add or sub" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created simple socket that can add or sub" />
   </component>
 </project>
