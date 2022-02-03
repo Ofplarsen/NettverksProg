@@ -12,13 +12,14 @@ class ServerSocket() {
 
     constructor(PORT: Int) : this() {
         this.PORT = PORT
+        server = SS(PORT)
     }
 
     constructor(server: Socket) : this() {
         this.connection = server
     }
     private var PORT: Int = 0
-    private var server = SS(PORT)
+    private lateinit var server: SS
     private lateinit var connection: Socket
     private lateinit var readerConnection: InputStreamReader
     private lateinit var reader: BufferedReader
@@ -37,9 +38,9 @@ class ServerSocket() {
         return true;
     }
 
-    fun acceptConnection(): Boolean{
+    fun acceptConnection(): Socket{
         connection = server.accept();
-        return true;
+        return connection;
     }
 
     fun sendMessage(message: String){
@@ -148,17 +149,15 @@ fun main(args: Array<String>) {
      */
     var socket: Socket ?= null
     var mainServerSocket = ServerSocket(1250)
-    if(mainServerSocket.acceptConnection() && mainServerSocket.openConnection())
-        println("Connection established")
     println("Logg for tjenersiden. Nå venter vi...")
     while (true){
         try {
-            socket =  mainServerSocket.getConnection()
+            socket =  mainServerSocket.acceptConnection()
         }catch (e: Exception){
             println("Error: " + e.message)
         }
 
-        socket?.let { ServerSocket(it) }?.let { SocketThread(it).run() }
+        socket?.let { ServerSocket(it) }?.let { SocketThread(it) }?.start()
     }
 
 }

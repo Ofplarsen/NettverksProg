@@ -6,11 +6,10 @@ import java.util.*
 class SocketThread(val startClient: ServerSocket) : Thread() {
 
     override fun run(){
+
         val server = startClient
 
-        println("Logg for tjenersiden. Nå venter vi...")
-
-        if(server.acceptConnection() && server.openConnection()){
+        if(server.openConnection()){
             server.sendMessage("Hei, du har kontakt med tjenersiden!")
         }
 

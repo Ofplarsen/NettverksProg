@@ -20,6 +20,7 @@ class ClientSocket(private var PORT: Int) {
             reader = BufferedReader(readerConnection)
             writer = PrintWriter(connection.getOutputStream(), true)
         }catch (e : Exception){
+            println(e.message)
             return false;
         }
         return true;
