@@ -14,8 +14,8 @@ class ServerSocket() {
         this.PORT = PORT
     }
 
-    constructor(server: SS) : this() {
-        this.server = server
+    constructor(server: Socket) : this() {
+        this.connection = server
     }
     private var PORT: Int = 0
     private var server = SS(PORT)
@@ -55,7 +55,11 @@ class ServerSocket() {
         reader.close()
         writer.close()
     }
-    fun getServer(): java.net.ServerSocket {
+    fun getConnection(): Socket {
+        return connection
+    }
+
+    fun getServer(): java.net.ServerSocket{
         return server
     }
 }
@@ -99,7 +103,7 @@ class StringConverter(){
 }
 
 @Throws(IOException::class)
-@Synchronized fun main(args: Array<String>) {
+fun main(args: Array<String>) {
     /*
     val server = ServerSocket(1250)
 
@@ -142,17 +146,19 @@ class StringConverter(){
 
     server.closeConnection()
      */
-
+    var socket: Socket ?= null
     var mainServerSocket = ServerSocket(1250)
+    if(mainServerSocket.acceptConnection() && mainServerSocket.openConnection())
+        println("Connection established")
+    println("Logg for tjenersiden. Nå venter vi...")
     while (true){
-        var socket: java.net.ServerSocket
-        if(mainServerSocket.acceptConnection()){
-            socket = mainServerSocket.getServer()
-        }else{
-            break;
+        try {
+            socket =  mainServerSocket.getConnection()
+        }catch (e: Exception){
+            println("Error: " + e.message)
         }
 
-        SocketThread(ServerSocket(socket)).run()
+        socket?.let { ServerSocket(it) }?.let { SocketThread(it).run() }
     }
 
 }

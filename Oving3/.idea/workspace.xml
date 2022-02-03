@@ -9,13 +9,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa593bb6-3cd0-4635-9b94-a2597099b191" name="Changes" comment="Created simple socket that can add or sub">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/SocketThread.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.1/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+    <list default="true" id="aa593bb6-3cd0-4635-9b94-a2597099b191" name="Changes" comment="Trying to add threads. Found good stackoverflow">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/TestFile.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/ServerSocket.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ServerSocket.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,6 +32,7 @@
       <list>
         <option value="Kotlin Script" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -91,14 +88,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ThreadedEchoServer" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ThreadedEchoServer" />
+      <module name="untitled.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Kotlin.ClientSocketKt" />
       <item itemvalue="Kotlin.MainKt" />
       <item itemvalue="Kotlin.ServerSocketKt" />
+      <item itemvalue="Kotlin.ThreadedEchoServer" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Kotlin.ClientSocketKt" />
+        <item itemvalue="Kotlin.ThreadedEchoServer" />
         <item itemvalue="Kotlin.ServerSocketKt" />
       </list>
     </recent_temporary>
@@ -116,7 +122,8 @@
       <workItem from="1643721486818" duration="4599000" />
       <workItem from="1643799638141" duration="531000" />
       <workItem from="1643813259088" duration="772000" />
-      <workItem from="1643814177189" duration="3078000" />
+      <workItem from="1643814177189" duration="3129000" />
+      <workItem from="1643877767380" duration="2308000" />
     </task>
     <task id="LOCAL-00001" summary="Created simple socket that can add or sub">
       <created>1643724411387</created>
@@ -125,7 +132,14 @@
       <option name="project" value="LOCAL" />
       <updated>1643724411387</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Trying to add threads. Found good stackoverflow">
+      <created>1643817323630</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1643817323630</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +159,18 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Created simple socket that can add or sub" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created simple socket that can add or sub" />
+    <MESSAGE value="Trying to add threads. Found good stackoverflow" />
+    <option name="LAST_COMMIT_MESSAGE" value="Trying to add threads. Found good stackoverflow" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/ClientSocket.kt</url>
+          <line>63</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
