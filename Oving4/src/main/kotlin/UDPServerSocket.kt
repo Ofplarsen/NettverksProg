@@ -12,11 +12,11 @@ class UDPServerSocket : Thread() {
         var running = true
 
         while (running){
-            buf = "Please insert two numbers (num1 num2)".toByteArray()
             var packet = DatagramPacket(buf, buf.size)
             socket.receive(packet)
             var address = packet.address
             var port = packet.port
+            buf = "Please insert two numbers (num1 num2)".toByteArray()
             packet = DatagramPacket(buf, buf.size, address, port)
             socket.send(packet)
 
@@ -27,13 +27,13 @@ class UDPServerSocket : Thread() {
             socket.receive(packet)
             packet = DatagramPacket(buf, buf.size, address, port)
             var received = String(packet.data, 0, packet.length)
-
+            println(received.length)
             var numbers = listOf<String>()
             try{
-                numbers = StringConverter.getNumbers(received.trim())
+                numbers = StringConverter.getNumbers(received)
             }catch (e: Exception){
             }
-
+            buf = ByteArray(256)
             buf = "Would you like to add or subtract? (Write + or -)".toByteArray()
             packet = DatagramPacket(buf, buf.size, address, port)
             socket.send(packet)
@@ -44,18 +44,22 @@ class UDPServerSocket : Thread() {
             socket.receive(packet)
             packet = DatagramPacket(buf, buf.size, address, port)
             received = String(packet.data, 0, packet.length)
-
+            var string = ""
             try {
                 var sub = StringConverter.subOrAdd(received[0])
-                buf = if(sub){
-                    MathSolver.sub(numbers[0].toInt(),numbers[1].toInt()).toString().toByteArray()
+                if(sub){
+                    string = MathSolver.sub(numbers[0].toInt(), numbers[1].toInt()).toString()
 
                 }else{
-                    MathSolver.add(numbers[0].toInt(),numbers[1].toInt()).toString().toByteArray()
+
+                    string = MathSolver.add(numbers[0].toInt(), numbers[1].toInt()).toString()
 
                 }
             }catch (e: Exception){
+                println(e.message)
             }
+            println(string)
+            buf = string.toByteArray()
             packet = DatagramPacket(buf, buf.size, address, port)
             socket.send(packet)
         }
@@ -68,7 +72,7 @@ class StringConverter(){
         @Throws(IllegalArgumentException::class)
         fun getNumbers(string: String): List<String> {
             var numbers = string.split(' ');
-            if(numbers.size != 2){
+            if(numbers.size != 3){
                 throw IllegalArgumentException("Too many numbers")
             }
             if(numbers.contains(".*[a-zA-Z].*")){
