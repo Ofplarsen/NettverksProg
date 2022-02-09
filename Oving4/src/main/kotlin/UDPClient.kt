@@ -28,17 +28,23 @@ class UDPClient() {
 }
 
 fun main(args: Array<String>) {
-    /*
+    val clientReader = Scanner(System.`in`)
     val client = UDPClient()
-    var test = client.send("Hello")
-    println(test)
-    test = client.send("Server is working")
-    println(test)
-    client.send("end")
+    var line = " "
+    while (line != "") {
+        println( client.send("Initial connect"))
+
+        line = clientReader.nextLine()
+        println(client.send(line))
+
+        line = clientReader.nextLine()
+        println(client.send(line))
+
+    }
     client.close()
 
-     */
 
+    /*
     val clientReader = Scanner(System.`in`)
     val client = UDPClient();
     var line = ""
@@ -54,4 +60,6 @@ fun main(args: Array<String>) {
 
     }
 
+
+     */
 }
