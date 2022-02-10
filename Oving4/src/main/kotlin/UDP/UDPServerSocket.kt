@@ -6,7 +6,7 @@ import java.net.DatagramSocket
 class UDPServerSocket : Thread() {
     private val socket: DatagramSocket = DatagramSocket(1250)
     private val running = false
-    private var buf = ByteArray(256)
+    private var buf = ByteArray(65535)
 
     override fun run(){
         var running = true
@@ -22,7 +22,7 @@ class UDPServerSocket : Thread() {
 
 
             //Part 2
-            buf = ByteArray(256)
+            buf = ByteArray(65535)
             packet = DatagramPacket(buf, buf.size)
             socket.receive(packet)
             packet = DatagramPacket(buf, buf.size, address, port)
@@ -33,13 +33,13 @@ class UDPServerSocket : Thread() {
                 numbers = StringConverter.getNumbers(received)
             }catch (e: Exception){
             }
-            buf = ByteArray(256)
+            buf = ByteArray(65535)
             buf = "Would you like to add or subtract? (Write + or -)".toByteArray()
             packet = DatagramPacket(buf, buf.size, address, port)
             socket.send(packet)
 
             //Part 3
-            buf = ByteArray(256)
+            buf = ByteArray(65535)
             packet = DatagramPacket(buf, buf.size)
             socket.receive(packet)
             packet = DatagramPacket(buf, buf.size, address, port)
