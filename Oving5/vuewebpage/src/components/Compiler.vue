@@ -37,5 +37,12 @@ export default {
 </script>
 
 <style scoped>
-
+textarea{
+  width: 30%;
+  height: 400px;
+}
+button{
+  height: 100px;
+  width: 10%;
+}
 </style>
