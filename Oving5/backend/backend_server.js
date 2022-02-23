@@ -4,7 +4,7 @@ const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 const cors = require('cors')
-app.use(cors({origin: "http://localhost:3000"}))
+app.use(cors({origin: "http://localhost:8080"}))
 const fs = require('fs')
 
 app.post('/compile', (req, res) => {
