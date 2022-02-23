@@ -21,11 +21,12 @@ export default {
   methods:{
     compile: function (){
       this.result = "Please wait..."
-      axios.post("http://localhost:8990/compile/",{
+      axios.post("http://localhost:8990/compile",{
         code: this.code
       })
       .then(resp => {
-        this.result = resp
+        console.log(resp)
+        this.result = resp.data.result
       }).catch(err => {
         console.log("Something went wrong")
         console.log(err)
