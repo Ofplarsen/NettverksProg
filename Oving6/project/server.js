@@ -1,5 +1,5 @@
 const net = require('net');
-
+const crypto = require('crypto')
 // Simple HTTP server responds with a simple WebSocket client test
 const httpServer = net.createServer((connection) => {
     connection.on('data', () => {
@@ -12,6 +12,7 @@ const httpServer = net.createServer((connection) => {
     WebSocket test page
     <script>
       let ws = new WebSocket('ws://localhost:3001');
+    
       ws.onmessage = event => alert('Message from server: ' + event.data);
       ws.onopen = () => ws.send('hello');
     </script>
@@ -19,6 +20,9 @@ const httpServer = net.createServer((connection) => {
 </html>
 `;
         connection.write('HTTP/1.1 200 OK\r\nContent-Length: ' + content.length + '\r\n\r\n' + content);
+        connection.on("data", (data) => {
+            console.log(data.toString())
+        })
     });
 });
 httpServer.listen(3000, () => {
@@ -28,10 +32,34 @@ httpServer.listen(3000, () => {
 // Incomplete WebSocket server
 const wsServer = net.createServer((connection) => {
     console.log('Client connected');
-
+    let sha = crypto.createHash("sha1")
+    let magicString = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+    let serverHandshakeResponse = ""
+    let clientKey = ""
+    let hashKey = ""
+    let base64Key = ""
     connection.on('data', (data) => {
         console.log('Data received from client: ', data.toString());
+        const d = data.toString().split("\n")
+        for(let i = 0; i < d.length; i++){
+            if(d[i].toString().includes("Sec-WebSocket-Key:")){
+                clientKey = d[i].replace("Sec-WebSocket-Key: ", "")
+            }
+        }
+        console.log(clientKey)
+        let key = clientKey.concat(magicString)
+        hashKey = sha.update(key)
+        base64Key = sha.digest('base64')
+        serverHandshakeResponse = "HTTP/1.1 101 Switching Protocols\r\n" +
+            "Upgrade: websocket\r\n" +
+            "Connection: Upgrade\r\n" +
+            "Sec-WebSocket-Accept: " + base64Key + "\r\n\r\n"
+        console.log(serverHandshakeResponse)
+        connection.write(serverHandshakeResponse)
     });
+
+
+
 
     connection.on('end', () => {
         console.log('Client disconnected');
