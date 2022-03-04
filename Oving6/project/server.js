@@ -9,19 +9,25 @@ const httpServer = net.createServer((connection) => {
     <meta charset="UTF-8" />
   </head>
   <body>
-    WebSocket test page
+    <input type="text" id="message"/>
+    <button onclick="sendMessage()">Send Message</button>
     <script>
       let ws = new WebSocket('ws://localhost:3001');
-    
-      ws.onmessage = event => alert('Message from server: ' + event.data);
-      ws.onopen = () => ws.send('hello');
+        
+      ws.onmessage = event => alert('Message from server: ' + event.data.toString());
+      //ws.onopen = () => ws.send('hello');
+      
+      function sendMessage(){
+          console.log(document.getElementById("message").value)
+          ws.send(document.getElementById("message").value)
+      }
     </script>
   </body>
 </html>
 `;
         connection.write('HTTP/1.1 200 OK\r\nContent-Length: ' + content.length + '\r\n\r\n' + content);
         connection.on("data", (data) => {
-            console.log(data.toString())
+            console.log("This is reciveved from server: ", data.toString())
         })
     });
 });
@@ -38,24 +44,49 @@ const wsServer = net.createServer((connection) => {
     let clientKey = ""
     let hashKey = ""
     let base64Key = ""
+    let keys = []
+    let connections = []
+    let handsahekComplete = false
+
     connection.on('data', (data) => {
-        console.log('Data received from client: ', data.toString());
-        const d = data.toString().split("\n")
-        for(let i = 0; i < d.length; i++){
-            if(d[i].toString().includes("Sec-WebSocket-Key:")){
-                clientKey = d[i].replace("Sec-WebSocket-Key: ", "")
+        sha = crypto.createHash("sha1")
+        let test = data.toString().includes("Sec-WebSocket-Key:")
+        if(test) {
+            const d = data.toString().split("\n")
+            for (let i = 0; i < d.length; i++) {
+                if (d[i].toString().includes("Sec-WebSocket-Key:")) {
+                    clientKey = d[i].replace("Sec-WebSocket-Key: ", "")
+                    clientKey = clientKey.replace("\r", "")
+                    keys.push(clientKey)
+                    break
+                }
             }
+            console.log(clientKey)
+            let key = clientKey + magicString
+            console.log(key)
+            hashKey = sha.update(key)
+            base64Key = sha.digest('base64')
+            serverHandshakeResponse = "HTTP/1.1 101 Switching Protocols\r\n" +
+                "Upgrade: websocket\r\n" +
+                "Connection: Upgrade\r\n" +
+                "Sec-WebSocket-Accept: " + base64Key + "\r\n\r\n"
+            connection.write(serverHandshakeResponse)
+            handsahekComplete = true
+            connections.push(connection)
+        }else{
+            let bytes = data;
+            let length = bytes[1] & 127;
+            let maskStart = 2;
+            let dataStart = maskStart + 4;
+            for (let i = dataStart; i < dataStart + length; i++) {
+                let byte = bytes[i] ^ bytes[maskStart + ((i -dataStart) % 4)];
+                console.log(String.fromCharCode(byte));
+            }
+            let msg = Buffer.from([0x81, 0x0b, 68]);
+            msg = msg
+            connection.write(msg)
         }
-        console.log(clientKey)
-        let key = clientKey.concat(magicString)
-        hashKey = sha.update(key)
-        base64Key = sha.digest('base64')
-        serverHandshakeResponse = "HTTP/1.1 101 Switching Protocols\r\n" +
-            "Upgrade: websocket\r\n" +
-            "Connection: Upgrade\r\n" +
-            "Sec-WebSocket-Accept: " + base64Key + "\r\n\r\n"
-        console.log(serverHandshakeResponse)
-        connection.write(serverHandshakeResponse)
+
     });
 
 
