@@ -9,35 +9,71 @@ const httpServer = net.createServer((connection) => {
     <meta charset="UTF-8" />
   </head>
   <body>
-    <textarea style="width: 200px; height: 400px; white-space: pre-wrap;" id="logs"></textarea>
+    <!-- <textarea style="width: 200px; height: 400px; white-space: pre-wrap;" id="logs"></textarea> -->
+    <canvas style="alignment: center; width: 500px; height: 500px; border: black solid" onmousedown="sendMessage(event)" id="can"></canvas>
     <br>
     <input type="text" id="message" placeholder="Message"/>
     <button onclick="sendMessage()">Send Message</button>
     
     <script>
+      
       let ws = new WebSocket('ws://localhost:3001');
       let log = []
+      let startx = -1
+      let starty = -1
+      
       ws.onmessage = event => {
-          log.push(event.data);
-          alert(event.data)
-      }
-      //ws.onopen = () => ws.send('hello');
-      function sendMessage(){
-          ws.send(document.getElementById("message").value)
-      }
-      function getMessage(data){
-          const json = data.toString("utf8");
-            return JSON.parse(json);
+          console.log(event.data)
+          getMessage(event.data)
       }
       
-      function updateLog(){
-          document.getElementById("logs").value = ""
-          for(let i = 0; i < log.length; i++){
-             
-              document.getElementById("logs").value += log[i]
-             
-          }
+      
+      function getMousePos(evt) {
+            let canvas =  document.getElementById('can');
+            ctx = canvas.getContext("2d");
+            var rect = canvas.getBoundingClientRect();
+            let t = []
+            return {
+                x: Math.round(evt.clientX - rect.left),
+                y: Math.round(evt.clientY - rect.top)
+            };
+        }
+      //ws.onopen = () => ws.send('hello');
+      function sendMessage(evt){
+          ws.send(getMousePos(evt).x + "," + getMousePos(evt).y)
       }
+      
+      function getMessage(data){
+          
+          const json = data.toString("utf8");
+          msg = JSON.parse(json);
+          let coor = msg.split(",")
+          if(startx === -1 && starty === -1){
+              startx = coor[0]
+              starty = coor[1]
+          }else{
+              
+          }
+          draw(coor[0], coor[1])
+          startx = coor[0]
+          starty = coor[1]
+      }
+      
+      function draw(x, y){
+           let canvas =  document.getElementById('can');
+           ctx = canvas.getContext("2d");
+           
+          
+           
+        ctx.beginPath();
+        ctx.moveTo(startx, starty);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = 2;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+      }
+      
     </script>
   </body>
 </html>
@@ -100,7 +136,7 @@ const wsServer = net.createServer((connection) => {
             }
             console.log(str)
             for(let i = 0; i < connections.length; i++){
-                connections[i].write(createReply("Server received: " + str))
+                connections[i].write(createReply(str))
             }
         }
 
