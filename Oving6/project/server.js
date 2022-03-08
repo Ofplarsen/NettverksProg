@@ -10,10 +10,10 @@ const httpServer = net.createServer((connection) => {
   </head>
   <body>
     <!-- <textarea style="width: 200px; height: 400px; white-space: pre-wrap;" id="logs"></textarea> -->
-    <canvas style="alignment: center; width: 500px; height: 500px; border: black solid" onmousedown="sendMessage(event)" id="can"></canvas>
+    <canvas style=" border: black solid" onmouseup="disableDraw()" onmousedown="enableDraw()" onmousemove="sendMessage(event)" id="can"></canvas>
     <br>
-    <input type="text" id="message" placeholder="Message"/>
-    <button onclick="sendMessage()">Send Message</button>
+    <!--<input type="text" id="message" placeholder="Message"/>
+    <button onclick="sendMessage()">Send Message</button>-->
     
     <script>
       
@@ -21,25 +21,43 @@ const httpServer = net.createServer((connection) => {
       let log = []
       let startx = -1
       let starty = -1
+      let drawing = false
+      let canvas =  document.getElementById('can');
+      const canvasOffsetX = canvas.offsetLeft;
+      const canvasOffsetY = canvas.offsetTop;
+
+      canvas.width = 700;
+      canvas.height = 700;
       
       ws.onmessage = event => {
           console.log(event.data)
           getMessage(event.data)
       }
       
+      function enableDraw(){
+          drawing = true
+      }
+      
+      function disableDraw(){
+          startx = -1
+          starty = -1
+          drawing = false
+      }
       
       function getMousePos(evt) {
             let canvas =  document.getElementById('can');
             ctx = canvas.getContext("2d");
             var rect = canvas.getBoundingClientRect();
             let t = []
+            
             return {
-                x: Math.round(evt.clientX - rect.left),
-                y: Math.round(evt.clientY - rect.top)
+                x: Math.round(evt.clientX - canvasOffsetX),
+                y: Math.round(evt.clientY)
             };
         }
-      //ws.onopen = () => ws.send('hello');
+      
       function sendMessage(evt){
+          if(drawing)
           ws.send(getMousePos(evt).x + "," + getMousePos(evt).y)
       }
       
@@ -60,16 +78,15 @@ const httpServer = net.createServer((connection) => {
       }
       
       function draw(x, y){
-           let canvas =  document.getElementById('can');
-           ctx = canvas.getContext("2d");
-           
-          
-           
+       let canvas =  document.getElementById('can');
+       ctx = canvas.getContext("2d");
+       
         ctx.beginPath();
+        ctx.lineWidth = 5
+        ctx.lineCap = "round"
         ctx.moveTo(startx, starty);
+        //console.log(x,y)
         ctx.lineTo(x, y);
-        ctx.strokeStyle = 2;
-        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.closePath();
       }
